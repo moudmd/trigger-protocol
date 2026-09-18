@@ -6,28 +6,31 @@
 - [x] Trigger Receipt
 - [x] Minimal semantic conformance runner
 - [x] CI conformance check
+
+## v0.2 — vocabulary and interoperability
+- [x] Canonical vocabulary
+- [x] Primitive and envelope definitions
+- [x] Explicit proposal -> decision -> trigger -> execution references
+- [x] Portable conformance vectors
+- [x] Bounded authority/delegation semantics
+- [x] Extension preservation rule
+- [x] Transport-neutral interoperability profile
 - [ ] Formal receipt signing
 
-## v0.2 — interoperability
-- [ ] JSON Schema hardening
-- [ ] language-neutral conformance vectors
-- [ ] signed Trigger Receipts
-- [ ] reference SDK
-- [ ] MCP adapter
-- [ ] Agent framework adapters
-- [ ] authority/scope verification test vectors
-
-## v0.3 — governance infrastructure
-- [ ] authority graph
-- [ ] delegation validation
-- [ ] revocation registry
-- [ ] decision replay
-- [ ] governance diff
+## v0.3 — trust and governance infrastructure
+- [ ] Cryptographic signature profile
+- [ ] Identity-binding profiles
+- [ ] Authority graph
+- [ ] Delegation validation vectors
+- [ ] Revocation registry profile
+- [ ] Decision replay and governance diff
 
 ## Long term
-- [ ] Trigger Receipt as a portable authorization primitive
-- [ ] independent implementations
-- [ ] compatibility registry
-- [ ] governance simulation
+- [ ] Reference SDKs
+- [ ] MCP adapter
+- [ ] Agent framework adapters
+- [ ] Independent implementations
+- [ ] Compatibility registry
+- [ ] Governance simulation
 
-The project should optimize for interoperability and adoption, not feature count.
+The project should optimize for a small, stable semantic core and broad interoperability, not feature count.
