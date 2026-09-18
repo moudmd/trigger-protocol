@@ -144,7 +144,7 @@ For the v0.3 trust-layer experiment, the repository also includes dependency-fre
 ```bash
 node ./bin/trigger-receipt.mjs keygen --private-key ./private.pem --public-key ./public.pem
 node ./bin/trigger-receipt.mjs sign --receipt ./examples/destructive-action/receipt.json --private-key ./private.pem --key-id demo-operator
-node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem
+node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem\n\n# Then enforce it at the MCP boundary:\nnpx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem --require-signature -- node ./examples/destructive-action/server.mjs
 ```
 
 The public key is a deployment trust input; it is not taken from the receipt.
