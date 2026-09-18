@@ -1,15 +1,35 @@
 # Trigger Protocol Conformance v0.1
 
-An implementation claiming Trigger Protocol v0.1 compatibility should pass the normative fixture tests.
+An implementation claiming Trigger Protocol v0.1 compatibility should distinguish semantic validation from deployment-specific policy enforcement.
 
-## Required behavior
+## Implemented by the reference runner
 
-1. Accept a valid Trigger Receipt.
-2. Reject a receipt missing required authority or actor.
-3. Reject a non-approve receipt as an execution receipt.
-4. Reject a receipt whose protocol version is unsupported.
+1. Accept a structurally valid Trigger Receipt.
+2. Reject a receipt missing a required field.
+3. Reject a non-approve decision as an execution authorization.
+4. Reject an unsupported protocol version.
 5. Reject an expired receipt.
-6. Reject a receipt whose action or scope exceeds the delegated authority.
-7. Preserve the receipt identifier in execution/audit records.
+6. Reject a receipt issued in the future.
+7. Reject an invalid expiry relationship.
 
-The reference test runner is intentionally dependency-light and uses only the Python standard library.
+Run:
+
+```bash
+python conformance/test_conformance.py
+```
+
+## Required implementation semantics
+
+A conforming implementation MUST also enforce, at execution time:
+
+- the actor has the referenced authority;
+- the authority covers the requested action and scope;
+- delegated authority is valid and not revoked;
+- the authorization is valid at the time of execution;
+- the receipt identifier is preserved in execution/audit records.
+
+These checks depend on the implementation's authority and delegation model and are therefore not yet encoded in the minimal fixture runner.
+
+## Not yet standardized
+
+Cryptographic signatures, identity binding, revocation registries, and interoperable authority-discovery mechanisms are intentionally deferred from v0.1.
