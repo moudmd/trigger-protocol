@@ -129,6 +129,26 @@ Gate mode blocks an unauthorized `tools/call` before it reaches the upstream ser
 
 > **Important:** observe mode is not a security boundary. Gate mode is the Trigger Protocol enforcement point.
 
+### 3. See the boundary around a destructive action
+
+A fake `delete_file` executor demonstrates the important case without touching the real filesystem:
+
+```bash
+npx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json -- node ./examples/destructive-action/server.mjs
+```
+
+The receipt binds the authorization to the `delete_file` tool and its exact arguments. Change the path and the proxy blocks the call before the executor sees it.
+
+For the v0.3 trust-layer experiment, the repository also includes dependency-free Ed25519 receipt signing and verification:
+
+```bash
+node ./bin/trigger-receipt.mjs keygen --private-key ./private.pem --public-key ./public.pem
+node ./bin/trigger-receipt.mjs sign --receipt ./examples/destructive-action/receipt.json --private-key ./private.pem --key-id demo-operator
+node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem\n\n# Then enforce it at the MCP boundary:\nnpx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem --require-signature -- node ./examples/destructive-action/server.mjs
+```
+
+The public key is a deployment trust input; it is not taken from the receipt.
+
 ## MCP adapter
 
 The npm package `trigger-mcp-proxy` is intentionally small:
@@ -159,7 +179,7 @@ For consequential actions, bind the receipt to the exact invocation:
 
 This prevents a receipt for one invocation from silently authorizing materially different arguments.
 
-See [MCP_PROXY.md](MCP_PROXY.md) and [mcp-proxy/README.md](mcp-proxy/README.md).
+See [MCP_PROXY.md](MCP_PROXY.md), [protocol/signature-profile.md](protocol/signature-profile.md), and [mcp-proxy/README.md](mcp-proxy/README.md).
 
 ## Interoperability
 
@@ -223,20 +243,20 @@ No third-party runtime dependencies are required.
 
 ## Status
 
-**Experimental — v0.2**
+**Experimental — v0.3 trust-layer preview**
 
-The semantic core and an MCP enforcement adapter are implemented. The MCP package is published independently as `trigger-mcp-proxy`.
+The semantic core, an MCP enforcement adapter, and an experimental Ed25519 receipt signature profile are implemented. The npm package is published independently as `trigger-mcp-proxy`.
 
 The remaining trust-layer work includes:
 
-- cryptographic receipt signatures;
+- identity binding;
 - identity binding;
 - authority/delegation validation graphs;
 - revocation registry;
 - stronger cross-object conformance vectors;
 - decision replay and governance diff.
 
-Until signed identity and authority profiles exist, this project should be treated as an experimental protocol and not as a complete security system.
+The signature profile authenticates receipt integrity, not authority. Identity and authority binding remain separate work. This project is experimental and is not a complete security system.
 
 ## Network effect
 

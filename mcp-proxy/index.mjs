@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, readFileSync as readKeyFile, createPublicKey, verify as verifySignature } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 
@@ -41,7 +41,7 @@ function parseArgs(argv) {
       if (!receiptPath) throw new Error("--receipt requires a file");
       continue;
     }
-    if (arg === "--tool") {
+    if (arg === "--public-key") {\n      publicKeyPath = argv[++i];\n      if (!publicKeyPath) throw new Error("--public-key requires a file");\n      continue;\n    }\n    if (arg === "--require-signature") { requireSignature = true; continue; }\n    if (arg === "--tool") {
       const tool = argv[++i];
       if (!tool) throw new Error("--tool requires a tool name");
       allowedTools.push(tool);
@@ -54,7 +54,7 @@ function parseArgs(argv) {
   if (mode === "gate" && !receiptPath && !allowedTools.length) {
     throw new Error("gate mode requires --receipt or at least one --tool");
   }
-  return { mode, receiptPath, allowedTools, command };
+  return { mode, receiptPath, publicKeyPath, requireSignature, allowedTools, command };
 }
 
 function canonicalJson(value) {
@@ -67,11 +67,11 @@ function sha256(value) {
   return createHash("sha256").update(canonicalJson(value)).digest("hex");
 }
 
-function loadReceipt(path) {
+function verifyReceiptSignature(receipt, publicKeyPath) {\n  if (!receipt.signature || receipt.signature.algorithm !== "Ed25519") return false;\n  if (!receipt.signature.key_id || !receipt.signature.signature) return false;\n  if (!publicKeyPath) return false;\n  const copy = structuredClone(receipt);\n  delete copy.signature;\n  const payload = Buffer.from(canonicalJson(copy), "utf8");\n  return verifySignature(null, payload, createPublicKey(readKeyFile(publicKeyPath)), Buffer.from(receipt.signature.signature, "base64url"));\n}\n\nfunction loadReceipt(path, publicKeyPath, requireSignature) {
   const receipt = JSON.parse(readFileSync(path, "utf8"));
   const required = ["id", "protocol", "proposal_id", "decision_id", "actor", "authority_id", "action", "issued_at"];
   for (const key of required) if (receipt[key] === undefined) throw new Error(`receipt missing ${key}`);
-  if (receipt.protocol !== "trigger/0.2") throw new Error("receipt protocol must be trigger/0.2");
+  if (!["trigger/0.2", "trigger/0.3"].includes(receipt.protocol)) throw new Error("unsupported receipt protocol");
   if (receipt.expires_at && Date.parse(receipt.expires_at) <= Date.now()) throw new Error("receipt is expired");
   if (receipt.revoked === true) throw new Error("receipt is revoked");
   return receipt;
@@ -109,7 +109,7 @@ export async function run(argv) {
   const options = parseArgs(argv);
   if (options.help) { usage(); return; }
 
-  let receipt = options.receiptPath ? loadReceipt(options.receiptPath) : null;
+  let receipt = options.receiptPath ? loadReceipt(options.receiptPath, options.publicKeyPath, options.requireSignature) : null;
   const child = spawn(options.command[0], options.command.slice(1), {
     stdio: ["pipe", "pipe", "inherit"],
     env: process.env
