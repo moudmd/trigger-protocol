@@ -1,0 +1,10 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Trigger Delegation",
+  "type":"object",
+  "required":["id","grantor","grantee","authority"],
+  "properties":{
+    "id":{"type":"string"},"grantor":{"type":"string"},"grantee":{"type":"string"},"authority":{"$ref":"authority.schema.json"},
+    "expires_at":{"type":"string","format":"date-time"},"revocable":{"type":"boolean"}
+  }
+}
