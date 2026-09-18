@@ -13,7 +13,7 @@
   "extensions": {
     "https://trigger-protocol.org/ns/mcp-proxy": {
       "tool_name": "delete_file",
-      "arguments_sha256": "6d5f5c1ef8b6b4e6f1f5e1c6c7f5b2e1f4f1e4e1d7f8a1a4d8b9e1a5d5b8d1c"
+      "arguments_sha256": "36e7b77f253b8788d8cceff22ef944063582013502626ace3f506b4838791a10"
     }
   }
 }
