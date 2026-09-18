@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Trigger Decision Record",
+  "type":"object",
+  "required":["protocol","proposal","authorization","execution"],
+  "properties":{
+    "protocol":{"const":"trigger/0.1"},
+    "proposal":{"$ref":"proposal.schema.json"},
+    "authorization":{"$ref":"trigger.schema.json"},
+    "execution":{"$ref":"audit.schema.json"},
+    "outcome":{"$ref":"outcome.schema.json"}
+  }
+}
