@@ -1,9 +1,1 @@
-{
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "title":"Trigger Outcome",
-  "type":"object",
-  "required":["status","observed_at"],
-  "properties":{
-    "status":{"enum":["success","partial","failed","unknown"]},"observed_at":{"type":"string","format":"date-time"},"summary":{"type":"string"},"evidence":{"type":"array","items":{"type":"string"}}
-  }
-}
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://github.com/moudmd/trigger-protocol/blob/main/protocol/outcome.schema.json","title":"Trigger Outcome","type":"object","required":["id","protocol","execution_id","status","observed_at"],"properties":{"id":{"type":"string","minLength":1},"protocol":{"const":"trigger/0.2"},"execution_id":{"type":"string","minLength":1},"status":{"enum":["success","partial","failed","unknown"]},"observed_at":{"type":"string","format":"date-time"},"summary":{"type":"string"},"evidence":{"type":"array","items":{"type":"string"}},"extensions":{"type":"object"}},"additionalProperties":false}
