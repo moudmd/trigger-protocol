@@ -11,7 +11,7 @@ Two independent implementations MUST be able to exchange a proposal, authorizati
 
 JSON using UTF-8 is the reference interchange representation. JSON Schema Draft 2020-12 is used for structural validation.
 
-The wire format is transport-neutral. HTTP, queues, files, MCP, A2A, message buses, or other transports MAY carry the records.
+The wire format is transport-neutral. HTTP, queues, files, MCP, A2A, message buses, or other transports MAY carry the records. The reference MCP adapter is a middleware layer, not a replacement for MCP.
 
 ## Identifier rules
 
@@ -55,3 +55,9 @@ Example:
 Interoperability does not imply trust. A receiving executor MUST independently verify the authority and constraints relevant to its own execution context.
 
 Cryptographic signatures, identity federation, revocation registries, and transport authentication are profiles layered on the core protocol rather than assumptions of the semantic model.
+
+## MCP adapter profile
+
+The reference `trigger-mcp-proxy` maps an MCP `tools/call` to the Trigger Protocol action `mcp.tools/call`. In gate mode, the proxy forwards a call only when a valid Trigger Receipt covers the requested tool/scope. A namespaced extension may bind the receipt to the exact tool name and canonical-JSON SHA-256 of its arguments.
+
+The adapter is intentionally asymmetric: the upstream MCP server remains the execution target, while the proxy is the authorization enforcement point. Observe mode is transparent and therefore provides instrumentation, not enforcement.
