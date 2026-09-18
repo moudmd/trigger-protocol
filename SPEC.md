@@ -1,6 +1,6 @@
 # Trigger Protocol Specification
 
-Version: 0.2
+Version: 0.3
 Status: Experimental
 
 ## 1. Purpose
@@ -37,7 +37,7 @@ Dissent and second opinions are durable records. They do not disappear because a
 
 A Trigger MUST reference a proposal's decision, actor, authority, action, and issuance time. It SHOULD include resource/scope, constraints, policy version, delegation, and expiry where applicable.
 
-A Trigger Receipt is the portable representation of this authorization event.
+A Trigger Receipt is the portable representation of this authorization event. See protocol/signature-profile.md for the optional Ed25519 signature profile.
 
 ## 7. Execution gate
 
@@ -53,15 +53,15 @@ An executor MUST independently verify before a consequential action:
 
 An executor MUST reject or block execution when these checks fail. Successful execution does not retroactively legitimize a failed authorization check.
 
-## 8. Risk and reversibility
+## 8. Receipt signatures\n\nThe v0.3 signature profile defines detached Ed25519 signatures over the canonical receipt representation. Signature verification authenticates receipt integrity but does not establish authority; executors must still validate authority independently.\n\n## 9. Risk and reversibility
 
 Implementations SHOULD classify risk as low, medium, high, or critical and reversibility as reversible, partial, or irreversible. Higher impact and lower reversibility should normally require stronger authorization. The protocol does not prescribe a universal risk policy.
 
-## 9. Audit and outcome
+## 10. Audit and outcome
 
 Execution records MUST retain the Trigger ID. Outcome records SHOULD retain the Execution ID. Audit data should be sufficient to reconstruct authority and causality while minimizing unnecessary personal data.
 
-## 10. Versioning and interoperability
+## 11. Versioning and interoperability
 
 JSON/UTF-8 and JSON Schema Draft 2020-12 are the reference representation. Transport is intentionally unspecified. See protocol/interoperability.md.
 
