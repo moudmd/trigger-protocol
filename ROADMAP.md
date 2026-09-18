@@ -15,30 +15,37 @@
 - [x] Bounded authority/delegation semantics
 - [x] Extension preservation rule
 - [x] Transport-neutral interoperability profile
+- [x] MCP adoption surface
 - [ ] Formal receipt signing
 
-## v0.2 — MCP adoption surface
+## MCP adoption surface
 - [x] Zero-dependency stdio MCP proxy
 - [x] One-command `npx trigger-mcp-proxy` entry point
 - [x] Transparent observe mode
 - [x] Receipt-gated `tools/call` enforcement mode
 - [x] Optional exact-argument binding via SHA-256
-- [x] MCP adapter documentation
+- [x] Runnable local demo
+- [x] npm package metadata and test command
+- [x] npm trusted-publishing workflow
 
 ## v0.3 — trust and governance infrastructure
-- [ ] Cryptographic signature profile
+- [ ] Cryptographic receipt signature profile
 - [ ] Identity-binding profiles
 - [ ] Authority graph
 - [ ] Delegation validation vectors
 - [ ] Revocation registry profile
 - [ ] Decision replay and governance diff
+- [ ] Cross-object conformance: proposal -> decision -> trigger -> execution
+- [ ] Replay protection / nonce semantics
 
 ## Long term
 - [ ] Reference SDKs
-- [ ] MCP adapter
 - [ ] Agent framework adapters
 - [ ] Independent implementations
 - [ ] Compatibility registry
 - [ ] Governance simulation
+- [ ] Additional MCP operation profiles
 
 The project should optimize for a small, stable semantic core and broad interoperability, not feature count.
+
+The adoption strategy is deliberately simple: make the boundary useful locally, make the authorization artifact portable, and make integration cheap enough that independent systems can adopt it without surrendering governance to a central service.
