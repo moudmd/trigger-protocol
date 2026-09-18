@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Trigger Proposal",
+  "type":"object",
+  "required":["id","agent","action"],
+  "properties":{
+    "id":{"type":"string"},"agent":{"type":"string"},"action":{"type":"string"},"scope":{"type":"string"},
+    "risk":{"enum":["low","medium","high","critical"]},
+    "reversibility":{"enum":["reversible","partial","irreversible"]},
+    "evidence":{"type":"array","items":{"type":"string"}},
+    "alternatives":{"type":"array","items":{"type":"string"}},
+    "uncertainty":{"type":"number","minimum":0,"maximum":1}
+  },
+  "additionalProperties":true
+}
