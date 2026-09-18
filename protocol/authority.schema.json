@@ -1,0 +1,10 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Trigger Authority",
+  "type":"object",
+  "required":["id","holder","scope"],
+  "properties":{
+    "id":{"type":"string"},"holder":{"type":"string"},"scope":{"type":"string"},"limits":{"type":"object"},"policy":{"type":"string"},
+    "valid_from":{"type":"string","format":"date-time"},"valid_until":{"type":"string","format":"date-time"},"revoked":{"type":"boolean"}
+  }
+}
