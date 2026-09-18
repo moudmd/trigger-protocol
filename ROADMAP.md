@@ -4,17 +4,18 @@
 - [x] Proposal / authorization / execution separation
 - [x] Machine-readable schemas
 - [x] Trigger Receipt
-- [x] Minimal conformance runner
+- [x] Minimal semantic conformance runner
 - [x] CI conformance check
 - [ ] Formal receipt signing
 
 ## v0.2 — interoperability
 - [ ] JSON Schema hardening
-- [ ] language-neutral conformance fixtures
+- [ ] language-neutral conformance vectors
 - [ ] signed Trigger Receipts
 - [ ] reference SDK
 - [ ] MCP adapter
 - [ ] Agent framework adapters
+- [ ] authority/scope verification test vectors
 
 ## v0.3 — governance infrastructure
 - [ ] authority graph
