@@ -1,31 +1,37 @@
 # Principles
 
-## Intelligence is not authority
+## 1. Intelligence is not authority
 A system can reason well without possessing authority to act.
 
-## The Trigger is a boundary
-The Trigger marks the transition from proposed action to authorized action.
+## 2. Do not delegate the human decision itself
+AI may generate evidence, options, predictions, or recommendations. The legitimate authority to decide whether a consequential action should occur remains explicitly assigned; it is never inferred from model output.
 
-## Authority should be visible
-Consequential actions should have identifiable authority, scope, and policy basis.
+## 3. The Trigger is a boundary
+The Trigger marks the transition from proposed action to authorized action. It is not merely a UI click and not merely a model response.
 
-## Delegation should be bounded
-Delegation needs limits, expiry, and revocation.
+## 4. Authority should be visible
+Consequential actions should have identifiable authority, scope, constraints, policy basis, and validity.
 
-## Rejection matters
-A system that records only accepted recommendations hides important decision data.
+## 5. Delegation should be bounded
+Delegation needs scope, limits, expiry, and revocation. A delegate cannot silently gain more authority than the grantor possesses.
 
-## Irreversibility changes the gate
+## 6. Rejection matters
+Reject, modify, defer, and second opinion are first-class decision states. A system that records only accepted recommendations destroys important governance information.
+
+## 7. Irreversibility changes the gate
 Less reversible and more consequential actions deserve stronger authorization boundaries.
 
-## Auditability is not surveillance
+## 8. Auditability is not surveillance
 Record decision provenance needed for accountability while minimizing unnecessary personal data.
 
-## Governance is versioned
-The rules controlling agents are themselves versioned artifacts.
+## 9. Governance is versioned
+The rules controlling agents are themselves versioned artifacts. Historical decisions should remain interpretable under the policy that existed when they were made.
 
-## No single governance philosophy is assumed
-The protocol supplies primitives; organizations define legitimate authorities and policies.
+## 10. No single governance philosophy is assumed
+The protocol supplies primitives. Organizations and legitimate authorities define their own policies, thresholds, and institutions.
 
-## Open interoperability creates the network
-Independent agents and tools become more useful when they exchange the same portable decision records.
+## 11. Interoperability creates the network
+The valuable shared object is the portable decision and authorization record, not a centralized service. Independent implementations can participate without surrendering governance to a protocol operator.
+
+## 12. Humans remain accountable for legitimate human decisions
+Automation can enforce a boundary; it cannot manufacture legitimacy. The protocol records who authorized an action and under what authority rather than pretending that an algorithmic recommendation itself is the authority.
