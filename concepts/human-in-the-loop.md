@@ -1,9 +1,9 @@
-# Human-in-the-Loop
+# Human participation
 
-Human involvement should not be reduced to a decorative approval button.
+Human participation is one possible implementation of the authorization boundary, not the definition of the protocol.
 
-A meaningful authorization boundary exposes enough context to reject, modify, defer, or request more evidence.
+The essential requirement is that authority is explicit and independently verifiable. A deployment may use a human reviewer, a board, an organizational policy, or another legitimate authority according to its governance model.
 
-The protocol therefore treats approve, reject, modify, defer, and second-opinion requests as explicit decisions.
+AI output never becomes authority merely because a human interface displays an approval control. The approval must identify the actor, authority, scope, action, constraints, and validity needed by the executor.
 
-The purpose is not to assume human superiority. It is to make authority explicit and contestable.
+The protocol therefore preserves human agency without assuming that every action requires the same human interaction pattern.
