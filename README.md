@@ -101,6 +101,20 @@ Run conformance tests:
 
 No third-party Python packages are required.
 
+## MCP one-command middleware
+
+Existing MCP agent environments can be wrapped without rewriting the agent or MCP server:
+
+    npx trigger-mcp-proxy -- npx -y <your-mcp-server> <args>
+
+The adapter preserves MCP's stdio JSON-RPC stream and keeps diagnostics on stderr. **Observe mode is transparent by default.** Gate mode turns Trigger Receipt verification into an enforcement point for `tools/call`:
+
+    npx trigger-mcp-proxy --mode gate --receipt ./trigger-receipt.json -- npx -y <your-mcp-server>
+
+The proxy is intentionally a thin adapter: it does not mint authority or decide policy. It verifies that a concrete tool invocation has an explicit, valid authorization artifact before forwarding it.
+
+See [MCP_PROXY.md](MCP_PROXY.md) and [mcp-proxy/README.md](mcp-proxy/README.md).
+
 ## Status
 
 **Experimental — v0.2**
