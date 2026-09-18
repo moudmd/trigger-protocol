@@ -1,0 +1,19 @@
+{
+  "id": "tr-destructive-demo-001",
+  "protocol": "trigger/0.3",
+  "proposal_id": "delete-demo-001",
+  "decision_id": "decision-delete-demo-001",
+  "actor": "human:demo-operator",
+  "authority_id": "demo-destructive-action",
+  "action": "mcp.tools/call",
+  "scope": "delete_file",
+  "issued_at": "2026-09-19T00:00:00Z",
+  "expires_at": "2099-01-01T00:00:00Z",
+  "nonce": "demo-delete-001",
+  "extensions": {
+    "https://trigger-protocol.org/ns/mcp-proxy": {
+      "tool_name": "delete_file",
+      "arguments_sha256": "6d5f5c1ef8b6b4e6f1f5e1c6c7f5b2e1f4f1e4e1d7f8a1a4d8b9e1a5d5b8d1c"
+    }
+  }
+}
