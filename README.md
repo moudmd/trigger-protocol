@@ -20,6 +20,8 @@ PROPOSE → REVIEW → DECIDE → TRIGGER → EXECUTE → OUTCOME
 
 The Trigger is the boundary. A Trigger Receipt is portable evidence of that authorization event.
 
+> **A useful fictional reference point:** *PSYCHO-PASS* imagines a system that determines what should be permitted. Trigger Protocol explores the inverse boundary: it does not decide what should be done; it makes the authorization to act explicit, bounded, and portable.
+
 ## Why this exists
 
 Powerful AI systems make it increasingly easy for a recommendation to become an action without a visible transition between the two.
@@ -139,7 +141,7 @@ npx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receip
 
 The receipt binds the authorization to the `delete_file` tool and its exact arguments. Change the path and the proxy blocks the call before the executor sees it.
 
-For the v0.3 trust-layer experiment, the repository also includes dependency-free Ed25519 receipt signing and verification:
+For the v0.3 trust-layer experiment, the repository also includes dependency-free Ed25519 receipt signing and verification. Signature support is experimental and optional; it does not replace authority validation:
 
 ```bash
 node ./bin/trigger-receipt.mjs keygen --private-key ./private.pem --public-key ./public.pem
@@ -241,22 +243,26 @@ npm pack --dry-run
 
 No third-party runtime dependencies are required.
 
-## Status
+## Versioning and status
 
-**Experimental — v0.3 trust-layer preview**
+**Protocol: trigger/0.3 — experimental trust-layer preview**  
+**npm adapter: trigger-mcp-proxy 0.2.x**
 
-The semantic core, an MCP enforcement adapter, and an experimental Ed25519 receipt signature profile are implemented. The npm package is published independently as `trigger-mcp-proxy`.
+The protocol version and the npm package version are intentionally independent: the package is an implementation/adoption surface, while the protocol version describes the wire-level semantics and trust model.
+
+
+
+The semantic core, an MCP enforcement adapter, and an experimental Ed25519 receipt signature profile are implemented. The npm package is published independently as `trigger-mcp-proxy`. The v0.3 schema and signature profile are experimental and do not make the protocol a complete security system.
 
 The remaining trust-layer work includes:
 
-- identity binding;
 - identity binding;
 - authority/delegation validation graphs;
 - revocation registry;
 - stronger cross-object conformance vectors;
 - decision replay and governance diff.
 
-The signature profile authenticates receipt integrity, not authority. Identity and authority binding remain separate work. This project is experimental and is not a complete security system.
+The signature profile authenticates receipt integrity, not authority. Identity and authority binding remain separate work. This project is experimental and is not a complete security system. Gate mode is an enforcement point, not a universal trust anchor: deployments still need independent identity, authority, delegation, revocation, and replay controls.
 
 ## Network effect
 
