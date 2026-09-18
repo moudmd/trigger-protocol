@@ -1,0 +1,15 @@
+{
+  "receipt_id":"tr-demo-001",
+  "protocol":"trigger/0.1",
+  "proposal_id":"deploy-001",
+  "decision":"approve",
+  "actor":"human:oncall",
+  "authority":"production-release",
+  "action":"deploy",
+  "scope":"production",
+  "constraints":{"environment":"production","service":"example"},
+  "policy_version":"release-policy/7",
+  "issued_at":"2026-01-01T11:00:00Z",
+  "expires_at":"2026-01-01T12:00:00Z",
+  "nonce":"demo-deploy-001"
+}
