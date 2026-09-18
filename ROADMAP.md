@@ -16,7 +16,6 @@
 - [x] Extension preservation rule
 - [x] Transport-neutral interoperability profile
 - [x] MCP adoption surface
-- [x] Formal receipt signing (Ed25519 profile)
 
 ## MCP adoption surface
 - [x] Zero-dependency stdio MCP proxy
@@ -29,7 +28,8 @@
 - [x] npm trusted-publishing workflow
 
 ## v0.3 — trust and governance infrastructure
-- [x] Cryptographic receipt signature profile
+- [x] Cryptographic receipt signature profile (Ed25519, experimental)
+- [x] v0.3 receipt schema
 - [ ] Identity-binding profiles
 - [ ] Authority graph
 - [ ] Delegation validation vectors
