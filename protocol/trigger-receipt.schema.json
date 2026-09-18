@@ -1,75 +1,25 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://trigger-protocol.org/schema/trigger-receipt-0.3.json",
-  "title": "Trigger Receipt",
-  "description": "Portable authorization record for a bounded action.",
-  "type": "object",
-  "required": [
-    "receipt_id",
-    "protocol",
-    "proposal_id",
-    "decision",
-    "actor",
-    "authority_id",
-    "action",
-    "issued_at"
-  ],
-  "properties": {
-    "receipt_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "protocol": {
-      "const": "trigger/0.3"
-    },
-    "proposal_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "decision": {
-      "const": "approve"
-    },
-    "actor": {
-      "type": "string",
-      "minLength": 1
-    },
-    "action": {
-      "type": "string",
-      "minLength": 1
-    },
-    "scope": {
-      "type": "string"
-    },
-    "constraints": {
-      "type": "object"
-    },
-    "policy_version": {
-      "type": "string"
-    },
-    "issued_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "expires_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "nonce": {
-      "type": "string"
-    },
-    "previous_receipt": {
-      "type": "string"
-    },
-    "signature": {
-      "$ref": "trigger-receipt-signature.schema.json"
-    },
-    "extensions": {
-      "type": "object"
-    },
-    "authority_id": {
-      "type": "string",
-      "minLength": 1
-    }
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://github.com/tanaka435/trigger-protocol/blob/main/protocol/trigger-receipt.schema.json",
+  "title":"Trigger Receipt",
+  "description":"Portable authorization record for a bounded action.",
+  "type":"object",
+  "required":["receipt_id","protocol","proposal_id","decision","actor","authority","action","issued_at"],
+  "properties":{
+    "receipt_id":{"type":"string","minLength":1},
+    "protocol":{"const":"trigger/0.1"},
+    "proposal_id":{"type":"string","minLength":1},
+    "decision":{"const":"approve"},
+    "actor":{"type":"string","minLength":1},
+    "authority":{"type":"string","minLength":1},
+    "action":{"type":"string","minLength":1},
+    "scope":{"type":"string"},
+    "constraints":{"type":"object"},
+    "policy_version":{"type":"string"},
+    "issued_at":{"type":"string","format":"date-time"},
+    "expires_at":{"type":"string","format":"date-time"},
+    "nonce":{"type":"string"},
+    "previous_receipt":{"type":"string"}
   },
-  "additionalProperties": false
+  "additionalProperties":false
 }
