@@ -17,6 +17,14 @@
 - [x] Transport-neutral interoperability profile
 - [ ] Formal receipt signing
 
+## v0.2 — MCP adoption surface
+- [x] Zero-dependency stdio MCP proxy
+- [x] One-command `npx trigger-mcp-proxy` entry point
+- [x] Transparent observe mode
+- [x] Receipt-gated `tools/call` enforcement mode
+- [x] Optional exact-argument binding via SHA-256
+- [x] MCP adapter documentation
+
 ## v0.3 — trust and governance infrastructure
 - [ ] Cryptographic signature profile
 - [ ] Identity-binding profiles
