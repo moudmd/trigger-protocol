@@ -1,0 +1,19 @@
+{
+  "name": "trigger-mcp-proxy",
+  "version": "0.1.0",
+  "description": "A zero-dependency stdio MCP proxy that adds a Trigger Protocol authorization boundary.",
+  "type": "module",
+  "bin": {
+    "trigger-mcp-proxy": "./bin/trigger-mcp-proxy.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "CC0-1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moudmd/trigger-protocol.git"
+  },
+  "keywords": ["mcp", "model-context-protocol", "ai-agents", "authorization", "trigger-protocol", "proxy"],
+  "files": ["bin", "mcp-proxy", "protocol", "README.md", "LICENSE"]
+}
