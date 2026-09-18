@@ -1,62 +1,64 @@
 # trigger-mcp-proxy
 
-A zero-dependency stdio middleware for inserting a Trigger Protocol authorization boundary into an existing MCP agent/server connection.
+A zero-dependency stdio middleware that inserts a Trigger Protocol authorization boundary between an existing MCP client/agent and MCP server.
 
-## One-command experience
+## Install / run
 
-Run an existing MCP server through the proxy:
+Once published:
 
 ```bash
 npx trigger-mcp-proxy -- npx -y <your-mcp-server> <args>
 ```
 
-The proxy speaks the same line-delimited JSON-RPC transport on stdin/stdout and keeps diagnostics on stderr, so it can be inserted without changing the agent's MCP integration.
+No global installation is required.
 
-## Modes
+The proxy uses the upstream process's stdin/stdout as the MCP JSON-RPC stream and keeps its own diagnostics on stderr.
 
-### Observe
+## The important distinction
 
-Default. Every MCP message is forwarded unchanged. Tool calls are logged as structured authorization observations on stderr.
+The default is **observe mode** because it must be possible to insert the proxy into an existing agent environment without changing behavior.
 
-```bash
-npx trigger-mcp-proxy -- npx -y <your-mcp-server>
-```
+Observe mode is **not authorization**.
 
-This mode is for zero-friction adoption and instrumentation. It is **not** an enforcement boundary.
-
-### Gate
-
-Enforce the Trigger Protocol boundary for `tools/call`:
+For an actual enforcement boundary, use **gate mode**:
 
 ```bash
 npx trigger-mcp-proxy \
   --mode gate \
   --receipt ./trigger-receipt.json \
-  -- npx -y <your-mcp-server>
+  -- npx -y <your-mcp-server> <args>
 ```
 
-A tool call is forwarded only when the receipt:
+Gate mode forwards a `tools/call` only when the supplied Trigger Receipt authorizes that concrete invocation.
 
-- is `trigger/0.2`;
-- has not expired or been revoked;
-- has `action: "mcp.tools/call"`;
-- covers the requested tool through `scope`;
-- optionally matches the exact tool name;
-- optionally matches a SHA-256 hash of the tool arguments.
+## What gate mode verifies
 
-Otherwise the proxy returns JSON-RPC error `-32001` and does not forward the call.
+The receipt must:
 
-For a local, non-portable development exception:
+- use `trigger/0.2`;
+- contain the required authorization-event fields;
+- not be expired;
+- not be explicitly revoked;
+- use `action: "mcp.tools/call"`;
+- cover the requested tool through `scope`;
+- satisfy optional exact tool-name binding;
+- satisfy optional exact-argument binding.
 
-```bash
-npx trigger-mcp-proxy --mode gate --tool read_file -- npx -y <your-mcp-server>
-```
+An unauthorized request is **blocked before it reaches the upstream MCP server** and receives JSON-RPC error `-32001`.
 
-This allowlist is deliberately labeled as a local exception; it is not a Trigger Receipt and should not be treated as protocol authority.
+The proxy never turns an AI recommendation into authority.
 
-## Argument binding
+## Receipt is evidence, not authority
 
-For consequential tools, bind the receipt to the exact arguments:
+The proxy does not mint, infer, or broaden authority.
+
+A receipt says which proposal, decision, actor, authority, action, and scope are being presented at the execution boundary. The deployment still needs a trust layer capable of establishing that those references are legitimate.
+
+Today the package is intentionally conservative about this distinction: it validates the receipt artifact locally, but does not pretend that local JSON parsing proves real-world identity or institutional legitimacy.
+
+## Exact invocation binding
+
+For consequential tools, bind the receipt to the exact tool and arguments:
 
 ```json
 {
@@ -71,26 +73,59 @@ For consequential tools, bind the receipt to the exact arguments:
 }
 ```
 
-The hash is calculated over canonical JSON with object keys sorted recursively. This prevents a valid receipt for one invocation from silently authorizing a materially different invocation.
+Arguments are hashed from canonical JSON with object keys sorted recursively.
+
+## Local allowlist
+
+A local allowlist is available for development:
+
+```bash
+npx trigger-mcp-proxy --mode gate --tool read_file -- npx -y <your-mcp-server>
+```
+
+This is explicitly **not** a Trigger Protocol authority artifact. It is a local configuration escape hatch and should not be presented as portable authorization.
+
+## One-minute demo
+
+From the repository root:
+
+```bash
+npm test
+
+npx trigger-mcp-proxy \
+  --mode gate \
+  --receipt ./examples/mcp-demo-receipt.json \
+  -- node ./examples/mcp-demo-server.mjs
+```
+
+The included demo server exposes a harmless `hello` tool. The example receipt authorizes only that tool.
 
 ## Security boundary
 
-The proxy does not decide whether a proposal is substantively correct. It enforces the narrower protocol question:
+The proxy answers one narrow question:
 
-**Was this concrete MCP action explicitly authorized under a valid Trigger Receipt?**
+> Was this concrete MCP action presented with a valid Trigger Receipt before it reached the upstream server?
 
-The proxy also does not treat possession of the MCP server process, model, API credential, or tool definition as authority.
+It does not answer:
+
+- whether the underlying decision was substantively correct;
+- whether the organization chose a good policy;
+- whether an identity is genuine;
+- whether an MCP tool itself is safe;
+- whether a human should have approved the proposal.
+
+Those are separate governance and trust layers.
 
 ## Scope
 
-v0.1 intentionally gates `tools/call`. Resources, prompts, sampling, elicitation, and other MCP methods are passed through unchanged. Future adapters can extend the same authorization boundary to those operations.
+v0.1 gates `tools/call`. Other MCP methods pass through unchanged.
+
+Future adapter profiles can extend the same boundary to additional consequential operations.
 
 ## Development
 
-No third-party runtime dependencies are required.
-
 ```bash
+npm test
 node bin/trigger-mcp-proxy.mjs --help
+npm pack --dry-run
 ```
-
-The package is designed to be published to npm as `trigger-mcp-proxy`.
