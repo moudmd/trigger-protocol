@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 function canonicalJson(value) {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -15,4 +17,38 @@ const args = { path: "/tmp/example.txt", recursive: false };
 const expected = "0e006c8cfb0addee461e4774d4d5609a4c847b4d09ffb5f82d7a3605a121b1dc";
 assert.equal(hash(args), expected);
 
-console.log("mcp-proxy smoke tests: PASS");
+const proxy = new URL("./index.mjs", import.meta.url);
+const demo = new URL("../examples/mcp-demo-server.mjs", import.meta.url);
+const receipt = new URL("../examples/mcp-demo-receipt.json", import.meta.url);
+
+const child = spawn(process.execPath, [
+  proxy.pathname,
+  "--mode", "gate",
+  "--receipt", receipt.pathname,
+  "--",
+  process.execPath, demo.pathname
+], { stdio: ["pipe", "pipe", "pipe"] });
+
+let stdout = "";
+let stderr = "";
+child.stdout.on("data", chunk => { stdout += chunk; });
+child.stderr.on("data", chunk => { stderr += chunk; });
+
+child.stdin.write(JSON.stringify({
+  jsonrpc: "2.0",
+  id: 1,
+  method: "tools/call",
+  params: { name: "hello", arguments: { name: "Trigger" } }
+}) + "\n");
+
+const exitCode = await new Promise((resolve, reject) => {
+  child.once("error", reject);
+  child.once("exit", code => resolve(code));
+  setTimeout(() => child.stdin.end(), 100);
+});
+
+assert.equal(exitCode, 0);
+assert.match(stdout, /"Hello, Trigger\."/);
+assert.match(stderr, /"event":"authorized"/);
+
+console.log("mcp-proxy tests: PASS");
