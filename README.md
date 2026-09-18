@@ -243,7 +243,7 @@ No third-party runtime dependencies are required.
 
 ## Status
 
-**Experimental — v0.2**
+**Experimental — v0.3 trust-layer preview**
 
 The semantic core, an MCP enforcement adapter, and an experimental Ed25519 receipt signature profile are implemented. The npm package is published independently as `trigger-mcp-proxy`.
 
