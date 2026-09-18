@@ -32,4 +32,4 @@ For the trust-layer demonstration, create an Ed25519 key pair and sign the recei
     node ./bin/trigger-receipt.mjs sign --receipt ./examples/destructive-action/receipt.json --private-key ./private.pem --key-id demo-operator
     node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem
 
-The signature authenticates the receipt contents; the deployment still decides whether demo-operator is trusted for the stated authority.
+To enforce the signature at the proxy boundary, supply the trusted public key:\n\n    npx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem --require-signature -- node ./examples/destructive-action/server.mjs\n\nThe signature authenticates the receipt contents; the deployment still decides whether demo-operator is trusted for the stated authority.
