@@ -1,0 +1,9 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Trigger Authorization",
+  "type":"object",
+  "required":["decision","actor","authority","timestamp"],
+  "properties":{
+    "decision":{"enum":["approve","reject","modify","defer","request_second_opinion"]},"actor":{"type":"string"},"authority":{"type":"string"},"reason":{"type":"string"},"timestamp":{"type":"string","format":"date-time"},"constraints":{"type":"object"}
+  }
+}
