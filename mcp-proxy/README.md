@@ -35,7 +35,7 @@ Gate mode forwards a `tools/call` only when the supplied Trigger Receipt authori
 
 The receipt must:
 
-- use `trigger/0.2`;
+- use the Trigger Protocol core format (`trigger/0.2`) or the compatible experimental trust-layer format (`trigger/0.3`);
 - contain the required authorization-event fields;
 - not be expired;
 - not be explicitly revoked;
@@ -43,6 +43,8 @@ The receipt must:
 - cover the requested tool through `scope`;
 - satisfy optional exact tool-name binding;
 - satisfy optional exact-argument binding.
+
+When signature enforcement is enabled, the proxy additionally verifies the experimental Ed25519 signature profile and the configured trusted public key. Signature verification authenticates receipt integrity; it does not establish authority by itself.
 
 An unauthorized request is **blocked before it reaches the upstream MCP server** and receives JSON-RPC error `-32001`.
 
@@ -54,7 +56,7 @@ The proxy does not mint, infer, or broaden authority.
 
 A receipt says which proposal, decision, actor, authority, action, and scope are being presented at the execution boundary. The deployment still needs a trust layer capable of establishing that those references are legitimate.
 
-Today the package is intentionally conservative about this distinction: it validates the receipt artifact locally, but does not pretend that local JSON parsing proves real-world identity or institutional legitimacy.
+Today the package is intentionally conservative about this distinction: it validates the receipt artifact locally, but does not pretend that local JSON parsing or signature verification proves real-world identity or institutional legitimacy.
 
 ## Exact invocation binding
 
@@ -118,7 +120,7 @@ Those are separate governance and trust layers.
 
 ## Scope
 
-v0.1 gates `tools/call`. Other MCP methods pass through unchanged.
+The current adapter gates `tools/call`. Other MCP methods pass through unchanged.
 
 Future adapter profiles can extend the same boundary to additional consequential operations.
 
