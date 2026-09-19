@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { generateKeyPairSync, readFileSync, writeFileSync, sign, verify } from "node:crypto";
+import { generateKeyPairSync, sign, verify } from "node:crypto";
+import { readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 
 function canonicalJson(value) {
