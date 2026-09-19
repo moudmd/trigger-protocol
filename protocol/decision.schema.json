@@ -1,13 +1,21 @@
 {
   "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://github.com/moudmd/trigger-protocol/blob/main/protocol/decision.schema.json",
   "title":"Trigger Decision Record",
   "type":"object",
-  "required":["protocol","proposal","authorization","execution"],
+  "required":["id","protocol","proposal_id","proposal_hash","actor","decision","issued_at"],
   "properties":{
-    "protocol":{"const":"trigger/0.1"},
-    "proposal":{"$ref":"proposal.schema.json"},
-    "authorization":{"$ref":"trigger.schema.json"},
-    "execution":{"$ref":"audit.schema.json"},
-    "outcome":{"$ref":"outcome.schema.json"}
-  }
+    "id":{"type":"string","minLength":1},
+    "protocol":{"const":"trigger/0.2"},
+    "proposal_id":{"type":"string","minLength":1},
+    "proposal_hash":{"type":"string","minLength":1},
+    "actor":{"type":"string","minLength":1},
+    "decision":{"enum":["approve","reject","modify","defer","request_second_opinion"]},
+    "authority_id":{"type":"string","minLength":1},
+    "reason":{"type":"string"},
+    "issued_at":{"type":"string","format":"date-time"},
+    "expires_at":{"type":"string","format":"date-time"},
+    "extensions":{"type":"object"}
+  },
+  "additionalProperties":false
 }
