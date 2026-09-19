@@ -1,25 +1,36 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"https://github.com/tanaka435/trigger-protocol/blob/main/protocol/trigger-receipt.schema.json",
-  "title":"Trigger Receipt",
-  "description":"Portable authorization record for a bounded action.",
-  "type":"object",
-  "required":["receipt_id","protocol","proposal_id","decision","actor","authority","action","issued_at"],
-  "properties":{
-    "receipt_id":{"type":"string","minLength":1},
-    "protocol":{"const":"trigger/0.1"},
-    "proposal_id":{"type":"string","minLength":1},
-    "decision":{"const":"approve"},
-    "actor":{"type":"string","minLength":1},
-    "authority":{"type":"string","minLength":1},
-    "action":{"type":"string","minLength":1},
-    "scope":{"type":"string"},
-    "constraints":{"type":"object"},
-    "policy_version":{"type":"string"},
-    "issued_at":{"type":"string","format":"date-time"},
-    "expires_at":{"type":"string","format":"date-time"},
-    "nonce":{"type":"string"},
-    "previous_receipt":{"type":"string"}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trigger-protocol.org/schema/trigger-receipt-0.2.json",
+  "title": "Trigger Receipt v0.2",
+  "description": "Portable authorization record for a bounded action in the Trigger Protocol 0.2 semantic core.",
+  "type": "object",
+  "required": [
+    "id",
+    "protocol",
+    "proposal_id",
+    "decision_id",
+    "actor",
+    "authority_id",
+    "action",
+    "issued_at"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "protocol": {"const": "trigger/0.2"},
+    "proposal_id": {"type": "string", "minLength": 1},
+    "decision_id": {"type": "string", "minLength": 1},
+    "actor": {"type": "string", "minLength": 1},
+    "authority_id": {"type": "string", "minLength": 1},
+    "action": {"type": "string", "minLength": 1},
+    "resource": {"type": "string"},
+    "scope": {"type": "string"},
+    "constraints": {"type": "object"},
+    "policy_version": {"type": "string"},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "delegation_id": {"type": "string"},
+    "nonce": {"type": "string", "minLength": 1},
+    "extensions": {"type": "object"}
   },
-  "additionalProperties":false
+  "additionalProperties": false
 }
