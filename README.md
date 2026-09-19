@@ -20,7 +20,7 @@ PROPOSE → REVIEW → DECIDE → TRIGGER → EXECUTE → OUTCOME
 
 The Trigger is the boundary. A Trigger Receipt is portable evidence of that authorization event.
 
-> **A useful fictional reference point:** *PSYCHO-PASS* imagines a system that determines what should be permitted. Trigger Protocol explores the inverse boundary: it does not decide what should be done; it makes the authorization to act explicit, bounded, and portable.
+> **A useful fictional reference point:** *PSYCHO-PASS* asks what happens when a society gives a system the power to determine what should be permitted. Trigger Protocol takes a different lesson: we cannot assume that every person who must stand at a consequential decision boundary will be a person like Akane Tsunemori, consistently able to carry that judgment alone. Instead of requiring exceptional individuals, the protocol makes the boundary itself explicit: decisions can be challenged, rejected, deferred, or revised, and those decisions remain part of the durable record.
 
 ## Why this exists
 
@@ -47,9 +47,11 @@ A rejection, modification, deferral, or request for a second opinion remains a d
 
 This preserves the negative space around execution: not only what happened, but what was explicitly prevented from happening at that point in the decision lifecycle.
 
-## The critical invariant
+## The critical invariants
 
 **A model output MUST NOT be treated as authorization.**
+
+**A Decision Record MUST NOT disappear merely because a later Decision authorizes a subsequent action.**
 
 Likewise:
 
@@ -266,12 +268,13 @@ See [protocol/vocabulary.md](protocol/vocabulary.md).
 4. Authority is explicit, bounded, and visible.
 5. Delegation is scoped, expiring, and revocable.
 6. Rejection, modification, deferral, dissent, and second opinion are first-class.
-7. Irreversibility changes the gate.
-8. Auditability is not surveillance.
-9. Governance is versioned.
-10. No single governance philosophy is assumed.
-11. Interoperability creates the network.
-12. Humans remain accountable for legitimate decisions.
+7. Decision history is durable.
+8. Irreversibility changes the gate.
+9. Auditability is not surveillance.
+10. Governance is versioned.
+11. No single governance philosophy is assumed.
+12. Interoperability creates the network.
+13. Humans remain accountable for legitimate decisions.
 
 ## Repository structure
 
