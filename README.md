@@ -12,7 +12,7 @@ AI may reason, recommend, prepare, verify, and simulate. A consequential change 
 
 ## The model
 
-```
+```text
 PROPOSE → REVIEW → DECIDE → TRIGGER → EXECUTE → OUTCOME
                               │
                      authorization boundary
@@ -70,6 +70,19 @@ A Trigger Receipt is the portable authorization artifact presented to an executo
 ```
 
 A receipt is **evidence of an authorization event, not a source of authority by itself**. In a real deployment, the executor also needs a way to establish that the actor held the stated authority and that the referenced decision was actually approved.
+
+The distinction is fundamental:
+
+```text
+authority ──► decision ──► trigger receipt ──► execution
+   │              │               │                │
+   │              │               │                └─ what happened
+   │              │               └─ evidence of authorization
+   │              └─ what was decided
+   └─ who is entitled to authorize
+```
+
+A receipt can carry evidence of an authorization event; it does not manufacture the authority that made the event legitimate.
 
 ## Try it in under a minute
 
@@ -146,7 +159,10 @@ For the v0.3 trust-layer experiment, the repository also includes dependency-fre
 ```bash
 node ./bin/trigger-receipt.mjs keygen --private-key ./private.pem --public-key ./public.pem
 node ./bin/trigger-receipt.mjs sign --receipt ./examples/destructive-action/receipt.json --private-key ./private.pem --key-id demo-operator
-node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem\n\n# Then enforce it at the MCP boundary:\nnpx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem --require-signature -- node ./examples/destructive-action/server.mjs
+node ./bin/trigger-receipt.mjs verify --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem
+
+# Then enforce it at the MCP boundary:
+npx trigger-mcp-proxy --mode gate --receipt ./examples/destructive-action/receipt.json --public-key ./public.pem --require-signature -- node ./examples/destructive-action/server.mjs
 ```
 
 The public key is a deployment trust input; it is not taken from the receipt.
@@ -182,6 +198,33 @@ For consequential actions, bind the receipt to the exact invocation:
 This prevents a receipt for one invocation from silently authorizing materially different arguments.
 
 See [MCP_PROXY.md](MCP_PROXY.md), [protocol/signature-profile.md](protocol/signature-profile.md), and [mcp-proxy/README.md](mcp-proxy/README.md).
+
+## How it relates to existing security systems
+
+Trigger Protocol is **not** a replacement for authentication, identity systems, authorization policy engines, or MCP security mechanisms.
+
+Its boundary is different:
+
+```text
+identity / authentication
+          │
+          ▼
+authority / policy
+          │
+          ▼
+decision
+          │
+          ▼
+Trigger Protocol
+(explicit authorization event)
+          │
+          ▼
+executor / tool / API
+```
+
+In other words, Trigger Protocol standardizes the boundary **between a decision and an authorized action**. Existing identity, authentication, policy, delegation, and transport controls can establish *who may authorize* and *under what rules*; Trigger Protocol records and enforces the explicit transition into an authorized action.
+
+This makes it complementary to those systems rather than a competing replacement for them.
 
 ## Interoperability
 
@@ -222,7 +265,7 @@ See [protocol/vocabulary.md](protocol/vocabulary.md).
 
 ## Repository structure
 
-```
+```text
 protocol/       canonical schemas, vocabulary, interoperability
 conformance/    portable compatibility vectors
 examples/       runnable examples
@@ -245,24 +288,20 @@ No third-party runtime dependencies are required.
 
 ## Versioning and status
 
-**Protocol: trigger/0.3 — experimental trust-layer preview**  
-**npm adapter: trigger-mcp-proxy 0.2.x**
+**Core protocol: `trigger/0.2` — experimental semantic core**  
+**Trust layer: `trigger/0.3` — experimental profile preview**  
+**npm adapter: `trigger-mcp-proxy 0.2.x`**
 
-The protocol version and the npm package version are intentionally independent: the package is an implementation/adoption surface, while the protocol version describes the wire-level semantics and trust model.
+The core protocol and trust-layer profile are versioned separately from the npm adapter. The core defines the authorization semantics and interoperable records; the v0.3 trust layer adds experimental cryptographic receipt support without changing the core authority model. The npm package is an implementation/adoption surface and may evolve independently.
 
+Implemented today:
 
+- semantic core and portable schemas;
+- MCP enforcement adapter with observe/gate modes;
+- exact tool/argument binding;
+- experimental Ed25519 receipt signature profile.
 
-The semantic core, an MCP enforcement adapter, and an experimental Ed25519 receipt signature profile are implemented. The npm package is published independently as `trigger-mcp-proxy`. The v0.3 schema and signature profile are experimental and do not make the protocol a complete security system.
-
-The remaining trust-layer work includes:
-
-- identity binding;
-- authority/delegation validation graphs;
-- revocation registry;
-- stronger cross-object conformance vectors;
-- decision replay and governance diff.
-
-The signature profile authenticates receipt integrity, not authority. Identity and authority binding remain separate work. This project is experimental and is not a complete security system. Gate mode is an enforcement point, not a universal trust anchor: deployments still need independent identity, authority, delegation, revocation, and replay controls.
+The trust layer is intentionally incomplete. Remaining work includes identity binding, authority/delegation validation graphs, revocation, stronger cross-object conformance, and decision replay/governance diff. The signature profile authenticates receipt integrity, not authority; deployments still need their own identity, authority, delegation, revocation, and replay controls.
 
 ## Network effect
 
