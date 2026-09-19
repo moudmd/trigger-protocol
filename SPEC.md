@@ -44,9 +44,9 @@ The `proposal_hash` is an opaque content hash of the canonical proposal represen
 
 Only `approve` can lead to a Trigger. `reject`, `modify`, `defer`, and `request_second_opinion` MUST NOT be interpreted as execution authorization.
 
-All Decision Records are durable records. In particular, rejection, modification, deferral, and second-opinion decisions MUST remain available as records after later decisions are issued. A later Decision MUST NOT erase, overwrite, or invalidate an earlier Decision Record. A later decision is a subsequent determination; it does not rewrite the historical record.
+**Decision history is a core protocol invariant.** All Decision Records are durable records, including decisions that do not authorize execution. In particular, rejection, modification, deferral, and second-opinion decisions MUST remain available as records after later decisions are issued. A later Decision MUST NOT erase, overwrite, or invalidate an earlier Decision Record.
 
-A later approval may therefore coexist with an earlier rejection, for example when a revised proposal is approved. The earlier Decision Record remains bound to the proposal hash that was originally judged.
+A later decision is a subsequent determination, not a rewrite of history. A later approval may therefore coexist with an earlier rejection, for example when a revised proposal is approved. The earlier Decision Record remains bound to the proposal hash that was originally judged.
 
 A Decision Record MAY include authority, reason, expiry, and extension fields where applicable.
 
@@ -70,7 +70,11 @@ An executor MUST independently verify before a consequential action:
 
 An executor MUST reject or block execution when these checks fail. Successful execution does not retroactively legitimize a failed authorization check.
 
-## 8. Receipt signatures\n\nThe v0.3 signature profile defines detached Ed25519 signatures over the canonical receipt representation. Signature verification authenticates receipt integrity but does not establish authority; executors must still validate authority independently.\n\n## 9. Risk and reversibility
+## 8. Receipt signatures
+
+The v0.3 signature profile defines detached Ed25519 signatures over the canonical receipt representation. Signature verification authenticates receipt integrity but does not establish authority; executors must still validate authority independently.
+
+## 9. Risk and reversibility
 
 Implementations SHOULD classify risk as low, medium, high, or critical and reversibility as reversible, partial, or irreversible. Higher impact and lower reversibility should normally require stronger authorization. The protocol does not prescribe a universal risk policy.
 
