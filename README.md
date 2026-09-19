@@ -20,7 +20,7 @@ PROPOSE → REVIEW → DECIDE → TRIGGER → EXECUTE → OUTCOME
 
 The Trigger is the boundary. A Trigger Receipt is portable evidence of that authorization event.
 
-> **A useful fictional reference point:** *PSYCHO-PASS* asks what happens when a society gives a system the power to determine what should be permitted. Trigger Protocol takes a different lesson: we cannot assume that every person who must stand at a consequential decision boundary will be a person like Akane Tsunemori, consistently able to carry that judgment alone. Instead of requiring exceptional individuals, the protocol makes the boundary itself explicit: decisions can be challenged, rejected, deferred, or revised, and those decisions remain part of the durable record.
+> **A useful fictional reference point:** *PSYCHO-PASS* asks what happens when a society gives a system the power to determine what should be permitted. Trigger Protocol takes a different lesson: we cannot assume that every person who must stand at a consequential decision boundary can consistently carry that judgment alone. Instead of relying on exceptional individuals, the protocol makes the boundary itself explicit: decisions can be challenged, rejected, deferred, or revised, and those decisions remain part of the durable record.
 
 ## Why this exists
 
