@@ -1,0 +1,11 @@
+{
+  "id":"decision-reject-001",
+  "protocol":"trigger/0.2",
+  "proposal_id":"deploy-002",
+  "proposal_hash":"sha256:4d7d817ba49c1acf2f7d77872d308a34d21060033fb3e13210d724b740138f85",
+  "actor":"human:oncall",
+  "decision":"reject",
+  "authority_id":"production-release",
+  "reason":"Canary evidence is insufficient for production release.",
+  "issued_at":"2026-09-19T00:10:00Z"
+}
