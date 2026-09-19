@@ -37,6 +37,16 @@ Trigger Protocol separates:
 
 The protocol does **not** decide who should govern. It makes the conversion from decision to action explicit and machine-checkable.
 
+## What was stopped is also recorded
+
+A Trigger Protocol record is not only a record of what crossed the authorization boundary.
+
+**What was stopped is also recorded.**
+
+A rejection, modification, deferral, or request for a second opinion remains a durable Decision Record. A later approval does not erase the earlier decision; it is a subsequent determination, typically against a proposal with its own bound content hash.
+
+This preserves the negative space around execution: not only what happened, but what was explicitly prevented from happening at that point in the decision lifecycle.
+
 ## The critical invariant
 
 **A model output MUST NOT be treated as authorization.**
