@@ -29,9 +29,26 @@ Possession of a model, tool, API credential, or execution capability does not by
 
 ## 5. Decision
 
-Decision values are approve, reject, modify, defer, and request_second_opinion. Only approve can lead to a Trigger. A modification creates a new effective action representation and MUST remain linked to the original proposal.
+A **Decision Record** is the portable record of a determination about a specific proposal. It records what was judged, who made the determination, and what determination was made.
 
-Dissent and second opinions are durable records. They do not disappear because an approval was later issued.
+A Decision Record MUST include:
+
+- a unique `id`;
+- the proposal `proposal_id`;
+- a `proposal_hash` binding the decision to the exact proposal representation that was judged;
+- the deciding `actor`;
+- one decision value: `approve`, `reject`, `modify`, `defer`, or `request_second_opinion`;
+- `issued_at`.
+
+The `proposal_hash` is an opaque content hash of the canonical proposal representation. The protocol does not mandate a particular hashing algorithm beyond requiring that implementations agree on the representation used for verification.
+
+Only `approve` can lead to a Trigger. `reject`, `modify`, `defer`, and `request_second_opinion` MUST NOT be interpreted as execution authorization.
+
+All Decision Records are durable records. In particular, rejection, modification, deferral, and second-opinion decisions MUST remain available as records after later decisions are issued. A later Decision MUST NOT erase, overwrite, or invalidate an earlier Decision Record. A later decision is a subsequent determination; it does not rewrite the historical record.
+
+A later approval may therefore coexist with an earlier rejection, for example when a revised proposal is approved. The earlier Decision Record remains bound to the proposal hash that was originally judged.
+
+A Decision Record MAY include authority, reason, expiry, and extension fields where applicable.
 
 ## 6. Trigger
 
@@ -59,7 +76,11 @@ Implementations SHOULD classify risk as low, medium, high, or critical and rever
 
 ## 10. Audit and outcome
 
-Execution records MUST retain the Trigger ID. Outcome records SHOULD retain the Execution ID. Audit data should be sufficient to reconstruct authority and causality while minimizing unnecessary personal data.
+Execution records MUST retain the Trigger ID. Outcome records SHOULD retain the Execution ID and MAY retain a `decision_id` reference to the relevant Decision Record.
+
+The `decision_id` reference provides traceability between an outcome and a recorded decision. It MUST NOT be interpreted by the protocol as proof that the decision caused the outcome or that the outcome would have differed under another decision.
+
+Audit data should be sufficient to reconstruct authority and causality while minimizing unnecessary personal data.
 
 ## 11. Versioning and interoperability
 
