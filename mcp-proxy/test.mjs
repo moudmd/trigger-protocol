@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
 
 function canonicalJson(value) {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -17,7 +16,7 @@ const args = { path: "/tmp/example.txt", recursive: false };
 const expected = "0e006c8cfb0addee461e4774d4d5609a4c847b4d09ffb5f82d7a3605a121b1dc";
 assert.equal(hash(args), expected);
 
-const proxy = new URL("./index.mjs", import.meta.url);
+const proxy = new URL("../bin/trigger-mcp-proxy.mjs", import.meta.url);
 const demo = new URL("../examples/mcp-demo-server.mjs", import.meta.url);
 const receipt = new URL("../examples/mcp-demo-receipt.json", import.meta.url);
 
@@ -47,7 +46,7 @@ const exitCode = await new Promise((resolve, reject) => {
   setTimeout(() => child.stdin.end(), 100);
 });
 
-assert.equal(exitCode, 0);
+assert.equal(exitCode, 0, stderr);
 assert.match(stdout, /"Hello, Trigger\."/);
 assert.match(stderr, /"event":"authorized"/);
 
