@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { createHash, readFileSync as readKeyFile, createPublicKey, verify as verifySignature } from "node:crypto";
+import { createHash, createPublicKey, verify as verifySignature } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 
@@ -100,7 +100,7 @@ function verifyReceiptSignature(receipt, publicKeyPath) {
   return verifySignature(
     null,
     payload,
-    createPublicKey(readKeyFile(publicKeyPath)),
+    createPublicKey(readFileSync(publicKeyPath)),
     Buffer.from(receipt.signature.signature, "base64url")
   );
 }
