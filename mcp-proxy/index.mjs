@@ -13,6 +13,8 @@ Usage:
 Options:
   --mode observe|gate     observe is transparent (default); gate enforces receipts
   --receipt <file>        Trigger Receipt JSON used by --mode gate
+  --public-key <file>    Trusted Ed25519 public key for receipt signature verification
+  --require-signature     Require and verify the receipt's Ed25519 signature
   --tool <name>           In gate mode, allow this tool in addition to the receipt
   --help                  Show this help
 
@@ -25,8 +27,11 @@ Examples:
 function parseArgs(argv) {
   let mode = "observe";
   let receiptPath = null;
+  let publicKeyPath = null;
+  let requireSignature = false;
   const allowedTools = [];
   let i = 0;
+
   for (; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--") { i++; break; }
@@ -41,7 +46,16 @@ function parseArgs(argv) {
       if (!receiptPath) throw new Error("--receipt requires a file");
       continue;
     }
-    if (arg === "--public-key") {\n      publicKeyPath = argv[++i];\n      if (!publicKeyPath) throw new Error("--public-key requires a file");\n      continue;\n    }\n    if (arg === "--require-signature") { requireSignature = true; continue; }\n    if (arg === "--tool") {
+    if (arg === "--public-key") {
+      publicKeyPath = argv[++i];
+      if (!publicKeyPath) throw new Error("--public-key requires a file");
+      continue;
+    }
+    if (arg === "--require-signature") {
+      requireSignature = true;
+      continue;
+    }
+    if (arg === "--tool") {
       const tool = argv[++i];
       if (!tool) throw new Error("--tool requires a tool name");
       allowedTools.push(tool);
@@ -49,11 +63,19 @@ function parseArgs(argv) {
     }
     throw new Error(`unknown option: ${arg}`);
   }
+
   const command = argv.slice(i);
   if (!command.length) throw new Error("missing upstream MCP server command; use -- <command> [args...]");
   if (mode === "gate" && !receiptPath && !allowedTools.length) {
     throw new Error("gate mode requires --receipt or at least one --tool");
   }
+  if (requireSignature && (!receiptPath || !publicKeyPath)) {
+    throw new Error("--require-signature requires --receipt and --public-key");
+  }
+  if (publicKeyPath && !receiptPath) {
+    throw new Error("--public-key requires --receipt");
+  }
+
   return { mode, receiptPath, publicKeyPath, requireSignature, allowedTools, command };
 }
 
@@ -67,13 +89,38 @@ function sha256(value) {
   return createHash("sha256").update(canonicalJson(value)).digest("hex");
 }
 
-function verifyReceiptSignature(receipt, publicKeyPath) {\n  if (!receipt.signature || receipt.signature.algorithm !== "Ed25519") return false;\n  if (!receipt.signature.key_id || !receipt.signature.signature) return false;\n  if (!publicKeyPath) return false;\n  const copy = structuredClone(receipt);\n  delete copy.signature;\n  const payload = Buffer.from(canonicalJson(copy), "utf8");\n  return verifySignature(null, payload, createPublicKey(readKeyFile(publicKeyPath)), Buffer.from(receipt.signature.signature, "base64url"));\n}\n\nfunction loadReceipt(path, publicKeyPath, requireSignature) {
+function verifyReceiptSignature(receipt, publicKeyPath) {
+  if (!receipt.signature || receipt.signature.algorithm !== "Ed25519") return false;
+  if (!receipt.signature.key_id || !receipt.signature.signature) return false;
+  if (!publicKeyPath) return false;
+
+  const copy = structuredClone(receipt);
+  delete copy.signature;
+  const payload = Buffer.from(canonicalJson(copy), "utf8");
+  return verifySignature(
+    null,
+    payload,
+    createPublicKey(readKeyFile(publicKeyPath)),
+    Buffer.from(receipt.signature.signature, "base64url")
+  );
+}
+
+function loadReceipt(path, publicKeyPath, requireSignature) {
   const receipt = JSON.parse(readFileSync(path, "utf8"));
   const required = ["id", "protocol", "proposal_id", "decision_id", "actor", "authority_id", "action", "issued_at"];
   for (const key of required) if (receipt[key] === undefined) throw new Error(`receipt missing ${key}`);
   if (!["trigger/0.2", "trigger/0.3"].includes(receipt.protocol)) throw new Error("unsupported receipt protocol");
   if (receipt.expires_at && Date.parse(receipt.expires_at) <= Date.now()) throw new Error("receipt is expired");
   if (receipt.revoked === true) throw new Error("receipt is revoked");
+
+  if (requireSignature) {
+    if (!verifyReceiptSignature(receipt, publicKeyPath)) {
+      throw new Error("receipt signature verification failed");
+    }
+  } else if (publicKeyPath && receipt.signature && !verifyReceiptSignature(receipt, publicKeyPath)) {
+    throw new Error("receipt signature verification failed");
+  }
+
   return receipt;
 }
 
@@ -98,7 +145,7 @@ function jsonRpcError(id, code, message, data = {}) {
 function logEvent(event, extra = {}) {
   console.error(JSON.stringify({
     source: "trigger-mcp-proxy",
-    protocol: "trigger/0.2",
+    protocol: extra.protocol ?? "trigger/0.2",
     event,
     timestamp: new Date().toISOString(),
     ...extra
@@ -109,7 +156,10 @@ export async function run(argv) {
   const options = parseArgs(argv);
   if (options.help) { usage(); return; }
 
-  let receipt = options.receiptPath ? loadReceipt(options.receiptPath, options.publicKeyPath, options.requireSignature) : null;
+  const receipt = options.receiptPath
+    ? loadReceipt(options.receiptPath, options.publicKeyPath, options.requireSignature)
+    : null;
+
   const child = spawn(options.command[0], options.command.slice(1), {
     stdio: ["pipe", "pipe", "inherit"],
     env: process.env
@@ -145,6 +195,7 @@ export async function run(argv) {
 
     if (receiptOk || allowlisted) {
       logEvent("authorized", {
+        protocol: receipt?.protocol ?? "trigger/0.2",
         request_id: message.id ?? null,
         tool: toolName,
         receipt_id: receipt?.id ?? null,
@@ -155,6 +206,7 @@ export async function run(argv) {
     }
 
     logEvent("blocked", {
+      protocol: receipt?.protocol ?? "trigger/0.2",
       request_id: message.id ?? null,
       tool: toolName,
       reason: "no-valid-trigger"
@@ -162,7 +214,7 @@ export async function run(argv) {
 
     if (message.id !== undefined) {
       process.stdout.write(jsonRpcError(message.id, -32001, "Trigger Protocol authorization required", {
-        protocol: "trigger/0.2",
+        protocol: receipt?.protocol ?? "trigger/0.2",
         action: "mcp.tools/call",
         tool: toolName ?? null
       }));
